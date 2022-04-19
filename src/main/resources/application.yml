@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/qing?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
+    username: root
+    password: ytclove2020
+mybatis:
+  mapper-locations: classpath:mapper/*xml
+#   扫描所有的mybatis的文件不扫描spring框架搜索不到
+#   而且log要在mybatis-plus里面配置
+server:
+  port: 9090
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
