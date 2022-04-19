@@ -186,14 +186,14 @@ export default {
                     address:this.address
                 }
             }).then(res=>{
-                this.tableData=res.records  //这里参数需要在浏览器的网络监视器里面去看
-                this.total=res.total
+                this.tableData=res.data.records  //这里参数需要在浏览器的网络监视器里面去看
+                this.total=res.data.total
             })
         },
     
         save(){
             request.post("/user",this.form).then(res=>{
-                if (res){
+                if (res.data){
                     this.$message.success("保存成功")//成功弹窗
                     this.dialogFormVisible=false
                     this.load()
@@ -205,7 +205,7 @@ export default {
     
         handleDelete(id){
             request.delete("/user/"+id).then(res=>{
-                if (res){
+                if (res.data){
                     this.$message.success("删除成功")//成功弹窗
                     this.dialogFormVisible=false
                     this.load()
@@ -220,7 +220,7 @@ export default {
         delBatch(){
             let ids=this.multipleSelection.map(v=>v.id)//把对象是数组转换为纯数组
             request.post("/user/del/batch",ids).then(res=>{
-                if (res){
+                if (res.data){
                     this.$message.success("批量删除成功")//成功弹窗
                     this.dialogFormVisible=false
                     this.load()

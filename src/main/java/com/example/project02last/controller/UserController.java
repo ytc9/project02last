@@ -8,6 +8,8 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.project02last.common.Constants;
+import com.example.project02last.common.Result;
 import com.example.project02last.controller.dto.UserDTO;
 import com.example.project02last.entity.User;
 import com.example.project02last.service.IUserService;
@@ -39,46 +41,62 @@ public class UserController {
 private IUserService userService;
 
 @PostMapping("/login")
-public Boolean Login(@RequestBody UserDTO userDTO) {
+public Result Login(@RequestBody UserDTO userDTO) {
         String username=userDTO.getUsername();
         String password=userDTO.getPassword();
         //逻辑判断输入的账号和密码是否为空
         if (StrUtil.isBlank(username)||StrUtil.isBlank(password)){
-                return false;
-        }
-        return userService.login(userDTO);
+                return Result.error(Constants.CODE_400,"参数错误");
+        }  //这里用的是自己定义的类去返回
+        UserDTO dto=userService.login(userDTO);
+        return Result.success(dto);
 }
 
-
+@PostMapping("/register")
+public Result register(@RequestBody UserDTO userDTO) {
+        String username=userDTO.getUsername();
+        String password=userDTO.getPassword();
+        if (StrUtil.isBlank(username)||StrUtil.isBlank(password)){
+                return Result.error(Constants.CODE_400,"参数错误");
+        }
+        User dto=userService.register(userDTO);
+        return Result.success(dto);
+        }
 
 @PostMapping
-public Boolean save(@RequestBody User user) {
-        return userService.saveOrUpdate(user);
+public Result save(@RequestBody User user) {
+        return Result.success(userService.saveOrUpdate(user)) ;
         }
 
 @PostMapping("/del/batch") //Delet接口没办法从前端传纯数组所以要用post接口
-public boolean deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
-        return userService.removeByIds(ids);
+public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
+        return Result.success(userService.removeByIds(ids));
         }
 
 @GetMapping
-public List<User> findAll() {
-        return userService.list();
+public Result findAll() {
+        return Result.success(userService.list());
         }
 
 @DeleteMapping("/{id}")
-public Boolean delete(@PathVariable Integer id) {
-                return userService.removeById(id);
+public Result delete(@PathVariable Integer id) {
+        return Result.success(userService.removeById(id));
         }
         //PathVariable 就是从url里面接受参数
 @GetMapping("/{id}")
-public User findOne(@PathVariable Integer id) {
-        return userService.getById(id);
+public Result findOne(@PathVariable Integer id) {
+        return Result.success(userService.getById(id));
         }
-
         //RequestParam就是从 ,{}对象式里面接受参数
+@GetMapping("/username/{username}")
+public Result findOne(@PathVariable String username) {
+        //QueryWrapper默认就是User类型所以userService.getOne(queryWrapper)也是User类型
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        return Result.success(userService.getOne(queryWrapper));
+        }
 @GetMapping("/page")
-public IPage<User> findPage(@RequestParam Integer pageNum,
+public Result findPage(@RequestParam Integer pageNum,
                            @RequestParam Integer pageSize,
                            @RequestParam(defaultValue = "") String username,
                            @RequestParam(defaultValue = "") String email,
@@ -98,7 +116,7 @@ public IPage<User> findPage(@RequestParam Integer pageNum,
         /*如果要用or在queryWrapper里面可以加上*/
         queryWrapper.orderByDesc("id");
         /*给新增的数据倒序*/
-        return userService.page(page,queryWrapper);
+        return Result.success(userService.page(page,queryWrapper));
         }
 
         //文件以excel文件导出  HttpServletResponse response是用来下载链接的对象
@@ -131,11 +149,11 @@ public void export(HttpServletResponse response) throws Exception {
 
 //MultipartFile file导入文件的集合类
 @PostMapping("/import")
-public Boolean imp(MultipartFile file) throws IOException {
+public Result imp(MultipartFile file) throws IOException {
         InputStream inputStream=file.getInputStream();
         ExcelReader reader=ExcelUtil.getReader(inputStream);
         //这里只能用遍历对象的方式去匹配Bean里面的字符串去把中文模板匹配转换为Bean的列字段
-        List<List<Object>> list=reader.read(1);
+        List<List<Object>> list=reader.read(1);//读取上传对象的列字段
         List<User> users= CollUtil.newArrayList();
         for (List<Object> row:list)
         {
@@ -152,7 +170,7 @@ public Boolean imp(MultipartFile file) throws IOException {
         /*List<User> list=reader.readAll(User.class);*/
         //将读取的excel文件转换为List对象再用mybatis plus导入saveBatch导入数据库
         userService.saveBatch(users);
-        return true;
+        return Result.success(true);
 }
 
 }

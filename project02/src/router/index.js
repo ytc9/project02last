@@ -4,6 +4,8 @@ import User from "@/components/User";
 import Home from "@/components/Home";
 import store from "@/store";
 import Login from "@/components/Login";
+import Register from "@/components/Register";
+import Person from "@/components/Person";
 
 const router=new VueRouter({
     routes:[
@@ -11,7 +13,7 @@ const router=new VueRouter({
             path:"/",
             name:"首页",
             component:Manage,
-            redirect:"/home",  //默认重定向到home
+            //redirect:"/home",  //默认重定向到home
             children:[
                 {
                     path:"user",
@@ -22,6 +24,11 @@ const router=new VueRouter({
                     path:"home",
                     name:"首页",
                     component:Home
+                },
+                {
+                    path:"person",
+                    name:"个人信息",
+                    component:Person
                 }
             ]
         },
@@ -29,6 +36,11 @@ const router=new VueRouter({
             path:"/login",
             name:"Login",
             component:Login
+        },
+        {
+            path:"/register",
+            name:"Register",
+            component:Register
         }
     ]
 })

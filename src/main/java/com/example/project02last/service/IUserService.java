@@ -13,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-04-17
  */
 public interface IUserService extends IService<User> {
-    Boolean login(UserDTO userDTO);
+    UserDTO login(UserDTO userDTO);
+
+    User register(UserDTO userDTO);
 }
