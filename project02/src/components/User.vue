@@ -39,6 +39,7 @@
     >   <!--删除确认框 这里有确认框就不用@click用@confirm-->
       <el-button type="danger" slot="reference">批量删除<i class="el-icon-remove-outline"></i></el-button>
     </el-popconfirm>
+     <!--这里用饿啦吗ui的上传组件来使用上传接口-->
      <el-upload
          action="http://localhost:9090/user/import"
          style="display: inline-block"
@@ -186,6 +187,7 @@ export default {
                     address:this.address
                 }
             }).then(res=>{
+               console.log(res)
                 this.tableData=res.data.records  //这里参数需要在浏览器的网络监视器里面去看
                 this.total=res.data.total
             })

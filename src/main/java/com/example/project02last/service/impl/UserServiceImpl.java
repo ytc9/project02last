@@ -10,6 +10,7 @@ import com.example.project02last.exception.ServiceException;
 import com.example.project02last.mapper.UserMapper;
 import com.example.project02last.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.project02last.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -27,7 +28,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User one=getUserInfo(userDTO);
         if (one!=null){
             BeanUtil.copyProperties(one,userDTO,true);
-            //参数1原对象 参数2就是就是把原对象的参数赋值到的新对象
+            //参数1原对象 参数2就是就是把原对象的参数赋值到的新对象 字段不一样的会自动去掉
+            //设置token通过User对象
+            String token = TokenUtils.genToken(one.getId().toString(),one.getPassword());
+            userDTO.setToken(token);
             return userDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");

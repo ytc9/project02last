@@ -13,6 +13,7 @@ import com.example.project02last.common.Result;
 import com.example.project02last.controller.dto.UserDTO;
 import com.example.project02last.entity.User;
 import com.example.project02last.service.IUserService;
+import com.example.project02last.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,6 +41,7 @@ public class UserController {
 @Resource
 private IUserService userService;
 
+//登录接口
 @PostMapping("/login")
 public Result Login(@RequestBody UserDTO userDTO) {
         String username=userDTO.getUsername();
@@ -52,6 +54,7 @@ public Result Login(@RequestBody UserDTO userDTO) {
         return Result.success(dto);
 }
 
+//注册接口
 @PostMapping("/register")
 public Result register(@RequestBody UserDTO userDTO) {
         String username=userDTO.getUsername();
@@ -63,31 +66,38 @@ public Result register(@RequestBody UserDTO userDTO) {
         return Result.success(dto);
         }
 
+//更新和修改接口
 @PostMapping
 public Result save(@RequestBody User user) {
         return Result.success(userService.saveOrUpdate(user)) ;
         }
 
+//批量删除接口
 @PostMapping("/del/batch") //Delet接口没办法从前端传纯数组所以要用post接口
 public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
         return Result.success(userService.removeByIds(ids));
         }
 
+//全查接口暂时没用
 @GetMapping
 public Result findAll() {
         return Result.success(userService.list());
         }
 
+//单个删除接口
 @DeleteMapping("/{id}")
 public Result delete(@PathVariable Integer id) {
         return Result.success(userService.removeById(id));
         }
         //PathVariable 就是从url里面接受参数
+//
 @GetMapping("/{id}")
 public Result findOne(@PathVariable Integer id) {
         return Result.success(userService.getById(id));
         }
         //RequestParam就是从 ,{}对象式里面接受参数
+
+//个人信息接口
 @GetMapping("/username/{username}")
 public Result findOne(@PathVariable String username) {
         //QueryWrapper默认就是User类型所以userService.getOne(queryWrapper)也是User类型
@@ -95,12 +105,14 @@ public Result findOne(@PathVariable String username) {
         queryWrapper.eq("username",username);
         return Result.success(userService.getOne(queryWrapper));
         }
+
+//分页查询接口(包括搜索接口)
 @GetMapping("/page")
 public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize,
-                           @RequestParam(defaultValue = "") String username,
-                           @RequestParam(defaultValue = "") String email,
-                           @RequestParam(defaultValue = "") String address) {
+                       @RequestParam Integer pageSize,
+                       @RequestParam(defaultValue = "") String username,
+                       @RequestParam(defaultValue = "") String email,
+                       @RequestParam(defaultValue = "") String address) {
         //参数里面如果不加defaultValue不传值就会报错加了就会置空
         IPage<User> page=new Page<>(pageNum,pageSize);
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
@@ -120,6 +132,7 @@ public Result findPage(@RequestParam Integer pageNum,
         }
 
         //文件以excel文件导出  HttpServletResponse response是用来下载链接的对象
+ //文件导出接口
 @GetMapping("/export")
 public void export(HttpServletResponse response) throws Exception {
         List<User> list=userService.list();
@@ -135,8 +148,7 @@ public void export(HttpServletResponse response) throws Exception {
         excelWriter.addHeaderAlias("avatar","头像");
         //将list对象写入excel
         excelWriter.write(list,true);
-       //设置浏览器响应的格式
-
+        //设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
         String fileName= URLEncoder.encode("用户信息","utf-8");
         response.setHeader("Content-Disposition","attachment;filename"+fileName+".xlsx");
@@ -147,6 +159,7 @@ public void export(HttpServletResponse response) throws Exception {
         excelWriter.close();
 }
 
+//文件导入接口
 //MultipartFile file导入文件的集合类
 @PostMapping("/import")
 public Result imp(MultipartFile file) throws IOException {
