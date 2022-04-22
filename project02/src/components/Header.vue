@@ -39,6 +39,7 @@ export default {
    },
    computed:{
      currentPathName(){
+        //这里通过vuex来监控路由守卫传来对应路由的名称来实现标题的变化
         return this.$store.state.currentPathName
      }
    },

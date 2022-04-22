@@ -128,10 +128,12 @@ public Result findPage(@RequestParam Integer pageNum,
         /*如果要用or在queryWrapper里面可以加上*/
         queryWrapper.orderByDesc("id");
         /*给新增的数据倒序*/
+        User currentUser = TokenUtils.getCurrentUser();
+        System.out.println("获取当前用户信息================================="+currentUser.getNickname());
         return Result.success(userService.page(page,queryWrapper));
         }
 
-        //文件以excel文件导出  HttpServletResponse response是用来下载链接的对象
+ //文件以excel文件导出  HttpServletResponse response是用来下载链接的对象
  //文件导出接口
 @GetMapping("/export")
 public void export(HttpServletResponse response) throws Exception {
@@ -185,7 +187,6 @@ public Result imp(MultipartFile file) throws IOException {
         userService.saveBatch(users);
         return Result.success(true);
 }
-
 }
 
 
