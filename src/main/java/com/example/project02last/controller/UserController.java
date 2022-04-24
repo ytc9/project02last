@@ -35,8 +35,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserController {
-
-
 /*@Autowired和Resource一样*/
 @Resource
 private IUserService userService;
@@ -72,6 +70,13 @@ public Result save(@RequestBody User user) {
         return Result.success(userService.saveOrUpdate(user)) ;
         }
 
+//单个删除接口
+@DeleteMapping("/{id}")
+public Result delete(@PathVariable Integer id) {
+        return Result.success(userService.removeById(id));
+}
+//PathVariable 就是从url里面接受参数
+
 //批量删除接口
 @PostMapping("/del/batch") //Delet接口没办法从前端传纯数组所以要用post接口
 public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
@@ -84,12 +89,7 @@ public Result findAll() {
         return Result.success(userService.list());
         }
 
-//单个删除接口
-@DeleteMapping("/{id}")
-public Result delete(@PathVariable Integer id) {
-        return Result.success(userService.removeById(id));
-        }
-        //PathVariable 就是从url里面接受参数
+
 //
 @GetMapping("/{id}")
 public Result findOne(@PathVariable Integer id) {
@@ -126,10 +126,11 @@ public Result findPage(@RequestParam Integer pageNum,
                 queryWrapper.like("address",address);
         }  //这里必须判断是否是空值不然还是会like %%字符串去拼接就查不到数据
         /*如果要用or在queryWrapper里面可以加上*/
-        queryWrapper.orderByDesc("id");
         /*给新增的数据倒序*/
+        queryWrapper.orderByDesc("id");
+        //Jwt Token
         User currentUser = TokenUtils.getCurrentUser();
-        System.out.println("获取当前用户信息================================="+currentUser.getNickname());
+        //System.out.println("获取当前用户信息================================="+currentUser.getNickname());
         return Result.success(userService.page(page,queryWrapper));
         }
 

@@ -12,6 +12,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 
@@ -21,21 +22,24 @@ import java.util.Date;
 @Component
 //生成token类  主要防止不登录就直接通过网页进入后端
 public class TokenUtils {
+    //这里通过静态方法去获取数据必须引用静态对象
+    //下面的判断就是包装一个判断类来通过token获取usrId再获取数据
+    private static IUserService staticUserService;
+    @Resource
+    private IUserService userService;
+    @PostConstruct
+    public void setUserService(){
+        staticUserService=userService;
+    }
+
+
     public static String genToken(String userId,String sign){
         return JWT.create().withAudience(userId) //将user id作为token里面的负载
                 .withExpiresAt(DateUtil.offsetHour(new Date(),2))//2小时后过期
                 .sign(Algorithm.HMAC256(sign));
         //头部放userId
     }
-    //这里通过静态方法去获取数据必须引用静态对象
-    //下面的判断就是包装一个判断类来通过token获取usrId再获取数据
-    private static IUserService staticUserService;
-    @Autowired
-    private IUserService userService;
-   @PostConstruct
-   public void setUserService(){
-    staticUserService=userService;
-   }
+
 
     public  static User getCurrentUser(){//默认调用获取当前登录用户信息
        //用HttpServletRequest从头部获取request对象 通过字段获取token

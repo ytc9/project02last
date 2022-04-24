@@ -23,6 +23,21 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     private static final Log log=Log.get();
+
+    private  User getUserInfo(UserDTO userDTO){
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",userDTO.getUsername());
+        queryWrapper.eq("password",userDTO.getPassword());
+        User one;
+        try{
+            one=getOne(queryWrapper);//查询用户信息赋值给one
+            // 这里如果是getone如果数据库有两个用户名和密码一样的数据就会报错
+        }catch (Exception e){
+            log.error(e);//打印异常的log
+            throw new ServiceException(Constants.CODE_500,"系统错误");
+        }
+        return one;
+    }
     @Override
     public UserDTO login(UserDTO userDTO) {
         User one=getUserInfo(userDTO);
@@ -53,18 +68,5 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return one;
     }
 
-    private  User getUserInfo(UserDTO userDTO){
-        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("username",userDTO.getUsername());
-        queryWrapper.eq("password",userDTO.getPassword());
-        User one;
-        try{
-            one=getOne(queryWrapper);//查询用户信息赋值给one
-            // 这里如果是getone如果数据库有两个用户名和密码一样的数据就会报错
-        }catch (Exception e){
-            log.error(e);//打印异常的log
-            throw new ServiceException(Constants.CODE_500,"系统错误");
-        }
-        return one;
-    }
+
 }

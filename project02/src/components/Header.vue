@@ -33,9 +33,11 @@
 export default {
    name: "Header",
    props:{
-     collapseBtnClass:String,
-     isCollapse:Boolean,
-     collapse:Function
+      collapseBtnClass:String,
+      isCollapse:Boolean,
+      collapse:Function,
+      user:Object
+      //manage主组件传过来才能实现person里面数据更新同步的问题
    },
    computed:{
      currentPathName(){
@@ -47,7 +49,6 @@ export default {
    },
   data(){
       return{
-        user:localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")):{}
       }
   },
   methods: {

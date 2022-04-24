@@ -1,6 +1,16 @@
 <template>
 <el-card style="width: 500px;margin: 180px auto">
    <el-form label-width="80px" size="small">
+      <el-upload
+          class="avatar-uploader"
+          action="http://localhost:9090/file/upload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+      >
+         <img v-if="form.avatar" :src="form.avatar" class="avatar">
+         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+      </el-upload>
+      
       <el-form-item label="用户名" >
          <el-input v-model="form.username" autocomplete="off"></el-input>
       </el-form-item>
@@ -35,26 +45,61 @@ export default {
       }
    },
    created() {
-      request.get("/user/username/"+this.user.username).then(res=>{
-         if (res.code==="200"){
-            this.form=res.data
-         }
+      this.getUser().then(res=>{
+      this.form=res
       })
    },
    methods:{
+      //async把异步的方法变成同步
+      async getUser(){
+         return  (await request.get("/user/username/"+this.user.username)).data
+      },
+      //getUser就相当于request.get()
       save(){
          request.post("/user",this.form).then(res=>{
-            if (res.data){
+            if (res.code==="200"){
                this.$message.success("保存成功")//成功弹窗
+               //自定义事件
+               this.$emit("refreshUser")
+               
             }else{
                this.$message.error("保存失败")
             }
          })
       },
-   }
+      handleAvatarSuccess(res){
+         this.form.avatar=res
+      }
+      },
 }
 </script>
 
-<style scoped>
-
+<style>
+.avatar-uploader{
+   text-align: center;
+   padding-bottom: 10px;
+}
+.avatar-uploader .el-upload {
+   border: 1px dashed #d9d9d9;
+   border-radius: 6px;
+   cursor: pointer;
+   position: relative;
+   overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+   border-color: #409EFF;
+}
+.avatar-uploader-icon {
+   font-size: 28px;
+   color: #8c939d;
+   width: 178px;
+   height: 178px;
+   line-height: 178px;
+   text-align: center;
+}
+.avatar {
+   width: 158px;
+   height: 158px;
+   display: block;
+}
 </style>
