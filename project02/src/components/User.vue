@@ -111,7 +111,7 @@
   
   
   <!--visible.sync绑定false属性默认不展示  编辑框 -->
-  <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" >
+  <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" style="border-radius: 20px" >
     <el-form label-width="80px" size="small">
       <el-form-item label="用户名" >
         <el-input v-model="form.username" autocomplete="off"></el-input>

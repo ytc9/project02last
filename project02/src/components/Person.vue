@@ -1,5 +1,5 @@
 <template>
-<el-card style="width: 500px;margin: 180px auto">
+<el-card style="width: 500px;margin: 100px auto">
    <el-form label-width="80px" size="small">
       <el-upload
           class="avatar-uploader"
@@ -11,8 +11,9 @@
          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
       
+      <!--用户名按业务来说是不能修改的-->
       <el-form-item label="用户名" >
-         <el-input v-model="form.username" autocomplete="off"></el-input>
+         <el-input v-model="form.username" disabled autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="昵称" >
          <el-input v-model="form.nickname" autocomplete="off"></el-input>
@@ -24,7 +25,7 @@
          <el-input v-model="form.phone" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="地址" >
-         <el-input v-model="form.address" autocomplete="off"></el-input>
+         <el-input v-model="form.address" autocomplete="off" type="textarea"></el-input>
       </el-form-item>
       <el-form-item>
          <el-button type="primary" @click="save">确 定</el-button>
@@ -61,6 +62,11 @@ export default {
                this.$message.success("保存成功")//成功弹窗
                //自定义事件
                this.$emit("refreshUser")
+               //更新浏览器缓存
+               this.getUser().then(res=>{
+                  res.token=JSON.parse(localStorage.getItem("user")).token
+                  localStorage.setItem("user",JSON.stringify(res))
+               })
                
             }else{
                this.$message.error("保存失败")
