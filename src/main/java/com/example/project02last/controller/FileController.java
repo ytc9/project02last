@@ -118,6 +118,7 @@ public class FileController {
     //保存更新接口
     @PostMapping("/update")
     public Result update(@RequestBody Files files) {
+        //updateById会自动去寻找对应的对象和传id是一样的
         return Result.success(fileMapper.updateById(files)) ;
     }
 
