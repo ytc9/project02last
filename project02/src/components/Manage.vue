@@ -10,12 +10,14 @@
             ><!--弹性布局-->
             <Header :collapseBtnClass="collapseBtnClass"
                     :collapse="collapse"
+                    :user="user"
             ></Header>
 
             </el-header>
             <el-main>
                <!--展示子路由-->
-              <router-view></router-view>
+              <!--这里用自定义事件用子组件调用父组件的函数-->
+              <router-view @refreshUser="getUser"></router-view>
             </el-main>
                <!--这里将页面绑定通过url传给后端然后返回数据
                @size-change="handleSizeChange"
@@ -36,14 +38,18 @@ export default {
    name: 'HelloWorld',
     data() {
       return {
-          isCollapse:false,
-          sideWidth:200,
-          logoShow:true,
-          collapseBtnClass:"el-icon-s-fold",/*element ui 将el-icon-s-fold绑定到span的class上*/
+         isCollapse:false,
+         sideWidth:200,
+         logoShow:true,
+         collapseBtnClass:"el-icon-s-fold",/*element ui 将el-icon-s-fold绑定到span的class上*/
+         user:{}
         }
     },
 
-    components:{Aside,Header},
+   created() {
+     this.getUser()//初始化数据
+   },
+   components:{Aside,Header},
     methods:{
        collapse() {
           this.isCollapse = !this.isCollapse
@@ -56,6 +62,13 @@ export default {
              this.collapseBtnClass = "el-icon-s-fold"
              this.logoShow = true
           }
+       },
+       getUser(){
+          //先通过父组件自定义事件给子组件函数回调然后数据会在父组件里面请求最后用组件传值给子组件显示
+          let username=localStorage.getItem("user")?JSON.parse(localStorage.getItem("user")).username:{}
+          request.get("/user/username/"+username).then(res=>{
+            this.user=res.data//获取数据 这里将token那部分的数据和内部的数据做了分离方便以后展示
+          })
        }
       },
 

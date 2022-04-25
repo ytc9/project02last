@@ -1,4 +1,5 @@
 import axios from 'axios'
+import ElementUI from "element-ui";
 
 const request = axios.create({
     baseURL: 'http://localhost:9090',
@@ -34,6 +35,12 @@ request.interceptors.response.use(
       // 兼容服务端返回的字符串数据
       if (typeof res === 'string') {
           res = res ? JSON.parse(res) : res
+      }
+      if(res.code==="401"){
+          ElementUI.Message({//将后端给msg验证提示用elementui展示
+              message:res.msg,
+              type:"error"
+          })
       }
       return res;
   },

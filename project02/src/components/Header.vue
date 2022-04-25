@@ -33,12 +33,15 @@
 export default {
    name: "Header",
    props:{
-     collapseBtnClass:String,
-     isCollapse:Boolean,
-     collapse:Function
+      collapseBtnClass:String,
+      isCollapse:Boolean,
+      collapse:Function,
+      user:Object
+      //manage主组件传过来才能实现person里面数据更新同步的问题
    },
    computed:{
      currentPathName(){
+        //这里通过vuex来监控路由守卫传来对应路由的名称来实现标题的变化
         return this.$store.state.currentPathName
      }
    },
@@ -46,7 +49,6 @@ export default {
    },
   data(){
       return{
-        user:localStorage.getItem("user")? JSON.parse(localStorage.getItem("user")):{}
       }
   },
   methods: {

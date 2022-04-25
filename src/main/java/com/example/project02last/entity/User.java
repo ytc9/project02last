@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
 
+import java.util.Date;
+
 //@TableName和@TableId都要加不然会让mybatis-plus报错
 
 @Data
@@ -26,5 +28,6 @@ public class User {
     //这里可以指定数据的名字 实体属性名字就能够不一致 如果是驼峰也能直接识别
     @TableField(value = "avatar_url")
     private String avatar;
+    private Date createTime;
 }
 /*这有lombok可以不用写get和set 直接用@Data*/
