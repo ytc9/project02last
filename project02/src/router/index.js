@@ -6,7 +6,6 @@ import store from "@/store";
 import Login from "@/components/Login";
 import Register from "@/components/Register";
 import Person from "@/components/Person";
-import File from "@/components/File";
 
 const router=new VueRouter({
     routes:[
@@ -30,11 +29,6 @@ const router=new VueRouter({
                     path:"person",
                     name:"个人信息",
                     component:Person
-                },
-                {
-                    path:"file",
-                    name:"文件管理",
-                    component:File
                 }
             ]
         },
