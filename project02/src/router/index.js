@@ -7,6 +7,7 @@ import Login from "@/components/Login";
 import Register from "@/components/Register";
 import Person from "@/components/Person";
 import File from "@/components/File";
+import Role from "@/components/Role";
 
 const router=new VueRouter({
     routes:[
@@ -20,6 +21,11 @@ const router=new VueRouter({
                     path:"user",
                     name:"系统管理/用户管理",
                     component:User
+                },
+                {
+                    path:"role",
+                    name:"系统管理/角色管理",
+                    component:Role
                 },
                 {
                     path:"home",

@@ -32,7 +32,7 @@ public class CodeGenerator {
                             .enableRestStyle()
                     ;//开启驼峰转连字符 就是url里面的_转换为驼峰
 
-                    builder.addInclude("role") // 设置需要生成的表名
+                    builder.addInclude("menu") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
 
                 })
