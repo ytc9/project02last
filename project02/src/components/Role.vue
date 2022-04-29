@@ -62,11 +62,12 @@
     <el-table-column prop="description" label="描述" >
     </el-table-column>
     
-    <el-table-column label="操作" width="200" align="center">
+    <el-table-column label="操作" width="280" align="center">
       <template slot-scope="scope">
         <!--这里必须要绑定slot scope不然没法获取编辑数据
            scope.row就是获取的属性
         -->
+         <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单<i class="el-icon-menu"></i></el-button>
         <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
         <el-popconfirm
             style="margin-left: 5px"
@@ -111,6 +112,26 @@
       <el-button type="primary" @click="save">确 定</el-button>
     </div>
   </el-dialog>
+   
+   <el-dialog title="菜单分配" :visible.sync="menuDialogVisible" width="30%" style="border-radius: 20px;" >
+         <!-- node-key="id"设置节点
+              :default-expanded-keys="[2, 3]"
+              :default-checked-keys="[5]"      -->
+      <el-tree
+          :props="props"
+          :data="menuData"
+          show-checkbox
+          node-key="id"
+          :default-expanded-keys="[2, 3]"
+          :default-checked-keys="[5]"
+          @check-change="handleCheckChange">
+      </el-tree>
+   
+      <div slot="footer" class="dialog-footer">
+         <el-button @click="menuDialogVisible = false">取 消</el-button>
+         <el-button type="primary" @click="save">确 定</el-button>
+      </div>
+   </el-dialog>
 </div>
 </template>
 
@@ -130,6 +151,11 @@ export default {
             form:{},
             multipleSelection:[],
             dialogFormVisible:false,
+            menuDialogVisible:false,
+            menuData:[],
+            props:{
+              label:"name"
+            }
         }
     },
     created() {//生命钩子里面发送请求
@@ -159,6 +185,7 @@ export default {
                 this.tableData=res.data.records  //这里参数需要在浏览器的网络监视器里面去看
                 this.total=res.data.total
             })
+          
         },
     
         save(){
@@ -199,34 +226,41 @@ export default {
                 }
             })
         },
-       exp(){
-         window.open('http://localhost:9090/role/export')
-       },
    
-       handleExcelImportSuccess(){
-          this.$message.success("文件导入成功")
-          this.load()
+       selectMenu(roleId){
+        this.menuDialogVisible=true
+  
+         request.get("/menu",{
+           params:{
+             name:""
+           }
+         }).then(res=>{
+           this.menuData=res.data
+         })
        },
        
-        handleEdit(row){
+       handleEdit(row){
             this.form=row
             this.dialogFormVisible=true
-        },
+       },
     
-        handleAdd(){
+       handleAdd(){
             this.dialogFormVisible=true
             this.form={}
-        },
+       },
     
-        handleSizeChange(pageSize){
+       handleSizeChange(pageSize){
             this.pageSize=pageSize
             this.load()
-        
-        },
-        handleCurrentChange(pageNum){
+       },
+       handleCurrentChange(pageNum){
             this.pageNum=pageNum
             this.load()
-        },
+       },
+   
+       handleCheckChange(data, checked, indeterminate) {
+          console.log(data, checked, indeterminate);
+       },
        
     }
 }

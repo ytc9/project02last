@@ -8,6 +8,7 @@ import Register from "@/components/Register";
 import Person from "@/components/Person";
 import File from "@/components/File";
 import Role from "@/components/Role";
+import Menu from "@/components/Menu";
 
 const router=new VueRouter({
     routes:[
@@ -29,7 +30,7 @@ const router=new VueRouter({
                 },
                 {
                     path:"home",
-                    name:"首页",
+                    name:"主页",
                     component:Home
                 },
                 {
@@ -41,6 +42,11 @@ const router=new VueRouter({
                     path:"file",
                     name:"文件管理",
                     component:File
+                },
+                {
+                    path:"menu",
+                    name:"菜单管理",
+                    component:Menu
                 }
             ]
         },

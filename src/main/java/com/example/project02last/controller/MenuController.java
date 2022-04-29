@@ -6,6 +6,7 @@ import com.example.project02last.common.Result;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //这里要配置模板才能生产对应的controller
 
@@ -44,9 +45,19 @@ public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
         return Result.success(menuService.removeByIds(ids));
         }
 
+//树级菜单返回接口
 @GetMapping
-public Result findAll() {
-         return Result.success(menuService.list());
+public Result findAll(@RequestParam(defaultValue = "") String name) {
+         QueryWrapper<Menu> queryWrapper=new QueryWrapper<>();
+         queryWrapper.like("name",name);//传来的name如果是空就全查
+         List<Menu> list=menuService.list(queryWrapper);
+         //pid为null的1级菜单
+         List<Menu> parentNode=list.stream().filter(menu -> menu.getPid()==null).collect(Collectors.toList());
+         for(Menu menu:parentNode){
+                 //通过pid和id的对应值找出1级菜单的子菜单
+           menu.setChildren(list.stream().filter(m -> menu.getId().equals(m.getPid()) ).collect(Collectors.toList()));
+         }
+         return Result.success(parentNode);
         }
 
 @GetMapping("/{id}")
@@ -55,9 +66,11 @@ public Result findOne(@PathVariable Integer id) {
         }
 
 @GetMapping("/page")
-public Result findPage(@RequestParam Integer pageNum,
-                           @RequestParam Integer pageSize) {
+public Result findPage(@RequestParam String name,
+                       @RequestParam Integer pageNum,
+                       @RequestParam Integer pageSize) {
         QueryWrapper<Menu> queryWrapper=new QueryWrapper<>();
+        queryWrapper.like("name",name);
         queryWrapper.orderByDesc("id");
         return Result.success(menuService.page(new Page<>(pageNum, pageSize),queryWrapper)) ;
         }
