@@ -62,5 +62,11 @@ public Result findPage(@RequestParam String name,
         queryWrapper.orderByDesc("id");
         return Result.success(roleService.page(new Page<>(pageNum, pageSize),queryWrapper)) ;
 }
+
+@PostMapping("/roleMenu/{roleId}")
+public Result roleMenu(@PathVariable Integer roleId,@RequestBody List<Integer> menuIds) {
+        roleService.setRoleMenu(roleId,menuIds);
+        return  Result.success();
+}
 }
 

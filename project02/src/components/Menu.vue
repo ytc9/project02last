@@ -27,21 +27,6 @@
     >   <!--删除确认框 这里有确认框就不用@click用@confirm-->
       <el-button type="danger" slot="reference">批量删除<i class="el-icon-remove-outline"></i></el-button>
     </el-popconfirm>
-     <!--这里用饿啦吗ui的上传组件来使用上传接口-->
-
-     <!--
-     <el-upload
-         action="http://localhost:9090/user/import"
-         style="display: inline-block"
-         :show-file-list="false"
-         accept="xlsx"
-         :on-success="handleExcelImportSuccess"
-     >
-        <el-button type="primary" style="margin-left: 5px">导入<i class="el-icon-bottom"></i></el-button>
-     </el-upload>
-    <el-button type="primary" style="margin-left: 5px" @click="exp">导出<i class="el-icon-top"></i></el-button>
-    -->
-  
   </div>
   <!--border stripe表格分割线
   element ui的bug  :header-cell-style="{'background-color': '#ccc'}"
@@ -65,7 +50,17 @@
     </el-table-column>
      <el-table-column prop="path" label="路径" >
      </el-table-column>
-     <el-table-column prop="icon" label="图标" >
+     <!-- class-name="fontSize18" 图标样式
+          align="center"
+          label-class-name="fontSize12"  头部字体  -->
+     <el-table-column prop="icon"
+                      label="图标"
+                      class-name="fontSize18"
+                      align="center"
+                      label-class-name="fontSize12">
+       <template slot-scope="scope">
+         <i :class="scope.row.icon"></i>
+       </template>
      </el-table-column>
     <el-table-column prop="description" label="描述" >
     </el-table-column>
@@ -115,7 +110,11 @@
           <el-input v-model="form.path" autocomplete="off"></el-input>
        </el-form-item>
        <el-form-item label="图标" >
-          <el-input v-model="form.icon" autocomplete="off"></el-input>
+         <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
+             <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
+               <i :class="item.value">{{item.name}}</i>
+             </el-option>
+         </el-select>
        </el-form-item>
        
       <el-form-item label="描述" >
@@ -146,6 +145,7 @@ export default {
             form:{},
             multipleSelection:[],
             dialogFormVisible:false,
+            options:[]
         }
     },
     created() {//生命钩子里面发送请求
@@ -216,8 +216,13 @@ export default {
        },
        
         handleEdit(row){
-            this.form=row
-            this.dialogFormVisible=true
+          this.form=row
+          this.dialogFormVisible=true
+          //请求图标数据
+          request.get("/menu/icons").then(res=>{
+            console.log(res)
+            this.options=res.data
+          })
         },
     
         handleAdd(id){
@@ -242,6 +247,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.fontSize18{
+  font-size: 30px;
+}
+.fontSize12{
+  font-size: 12px;
+}
 </style>

@@ -115,16 +115,21 @@
    
    <el-dialog title="菜单分配" :visible.sync="menuDialogVisible" width="30%" style="border-radius: 20px;" >
          <!-- node-key="id"设置节点
-              :default-expanded-keys="[2, 3]"
-              :default-checked-keys="[5]"      -->
+              :default-expanded-keys="[2, 3]" //设置默认勾选数据
+              :default-checked-keys="[5]"
+              :props 用于绑定名称
+         -->
       <el-tree
           :props="props"
           :data="menuData"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="[2, 3]"
-          :default-checked-keys="[5]"
+          :default-expanded-keys="[expands]"
+          :default-checked-keys="[checks]"
           @check-change="handleCheckChange">
+        <span class="custom-tree-node" slot-scope="{node,data}">
+          <span><i :class="data.icon"></i>{{data.name}}</span>
+        </span>
       </el-tree>
    
       <div slot="footer" class="dialog-footer">
@@ -155,7 +160,9 @@ export default {
             menuData:[],
             props:{
               label:"name"
-            }
+            },
+            expands:[],
+            checks:[]
         }
     },
     created() {//生命钩子里面发送请求
@@ -236,6 +243,8 @@ export default {
            }
          }).then(res=>{
            this.menuData=res.data
+           //把返回的菜单数据处理成id数据
+           this.expands=this.menuData.map(v=>v.id)
          })
        },
        

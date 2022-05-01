@@ -2,7 +2,10 @@ package com.example.project02last.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.project02last.common.Constants;
 import com.example.project02last.common.Result;
+import com.example.project02last.entity.Dict;
+import com.example.project02last.mapper.DictMapper;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -29,6 +32,9 @@ public class MenuController {
 
 @Resource
 private IMenuService menuService;
+
+@Resource
+private DictMapper dictMapper;
 
 @PostMapping
 public Result save(@RequestBody Menu menu) {
@@ -74,5 +80,13 @@ public Result findPage(@RequestParam String name,
         queryWrapper.orderByDesc("id");
         return Result.success(menuService.page(new Page<>(pageNum, pageSize),queryWrapper)) ;
         }
+
+@GetMapping("/icons")
+public Result getIcons(){
+      QueryWrapper<Dict> queryWrapper=new QueryWrapper<>();
+      queryWrapper.eq("type", Constants.DICT_TYPE_ICON);
+      return Result.success(dictMapper.selectList(queryWrapper));
+}
+
 }
 
