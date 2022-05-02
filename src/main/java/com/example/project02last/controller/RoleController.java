@@ -68,5 +68,9 @@ public Result roleMenu(@PathVariable Integer roleId,@RequestBody List<Integer> m
         roleService.setRoleMenu(roleId,menuIds);
         return  Result.success();
 }
+@GetMapping("/roleMenu/{roleId}")
+public Result GetRoleMenu(@PathVariable Integer roleId) {
+        return  Result.success( roleService.getRoleMenu(roleId));
+}
 }
 

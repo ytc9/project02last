@@ -43,4 +43,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
             roleMenuMapper.insert(roleMenu);
         }
     }
+
+    @Override
+    public List<Integer> getRoleMenu(Integer roleId) {
+        return roleMenuMapper.selectByRoleId(roleId);
+    }
 }

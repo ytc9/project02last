@@ -126,7 +126,8 @@
           node-key="id"
           :default-expanded-keys="[expands]"
           :default-checked-keys="[checks]"
-          @check-change="handleCheckChange">
+          ref="tree"
+      >
         <span class="custom-tree-node" slot-scope="{node,data}">
           <span><i :class="data.icon"></i>{{data.name}}</span>
         </span>
@@ -134,7 +135,7 @@
    
       <div slot="footer" class="dialog-footer">
          <el-button @click="menuDialogVisible = false">取 消</el-button>
-         <el-button type="primary" @click="save">确 定</el-button>
+         <el-button type="primary" @click="saveRoleMenu">确 定</el-button>
       </div>
    </el-dialog>
 </div>
@@ -162,7 +163,8 @@ export default {
               label:"name"
             },
             expands:[],
-            checks:[]
+            checks:[],
+            roleId:0
         }
     },
     created() {//生命钩子里面发送请求
@@ -206,7 +208,38 @@ export default {
                 }
             })
         },
+        saveRoleMenu(){
+        request.post("/role/roleMenu/"+this.roleId, this.$refs.tree.getCheckedKeys()).then(
+            res=>{
+            if (res.code==="200"){
+                this.$message.success("绑定成功")
+                this.menuDialogVisible=false
+            }else {
+                this.$message.error(res.msg)
+            }
+            },
+        )
+        },
     
+    
+        selectMenu(roleId){
+            this.menuDialogVisible=true
+            this.roleId=roleId
+            request.get("/menu",{
+                params:{
+                    name:""
+                }
+            }).then(res=>{
+                this.menuData=res.data
+                //把返回的菜单数据处理成id数据
+                this.expands=this.menuData.map(v=>v.id)
+            })
+            request.get("/role/roleMenu/"+roleId,{
+            }).then(res=>{
+                this.checks=res.data
+            })
+        },
+        
         handleDelete(id){
             request.delete("/role/"+id).then(res=>{
                 if (res.code==="200"){
@@ -218,9 +251,11 @@ export default {
                 }
             })
         },
+        
         handleSelectionChange(val){//这个函数用于选择返回多选框的id
             this.multipleSelection=val
         },
+        
         delBatch(){
             let ids=this.multipleSelection.map(v=>v.id)//把对象是数组转换为纯数组
             request.post("/role/del/batch",ids).then(res=>{
@@ -233,20 +268,6 @@ export default {
                 }
             })
         },
-   
-       selectMenu(roleId){
-        this.menuDialogVisible=true
-  
-         request.get("/menu",{
-           params:{
-             name:""
-           }
-         }).then(res=>{
-           this.menuData=res.data
-           //把返回的菜单数据处理成id数据
-           this.expands=this.menuData.map(v=>v.id)
-         })
-       },
        
        handleEdit(row){
             this.form=row
@@ -266,11 +287,6 @@ export default {
             this.pageNum=pageNum
             this.load()
        },
-   
-       handleCheckChange(data, checked, indeterminate) {
-          console.log(data, checked, indeterminate);
-       },
-       
     }
 }
 </script>
