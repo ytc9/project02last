@@ -21,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-  @ApiModel(value = "Menu对象", description = "")
+@ApiModel(value = "Menu对象", description = "")
 public class Menu implements Serializable {
 
     private static final long serialVersionUID = 1L;
