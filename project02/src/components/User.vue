@@ -112,11 +112,17 @@
   
   <!--visible.sync绑定false属性默认不展示  编辑框
    autocomplete="off" 关闭自动填充
+   这里的v-model用于显示选定项
    -->
   <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%" style="border-radius: 20px" >
     <el-form label-width="80px" size="small">
       <el-form-item label="用户名" >
-        <el-input v-model="form.username" autocomplete="off"></el-input>
+          <el-input v-model="form.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="选择角色" >
+          <el-select clearable v-model="form.name" placeholder="请选择角色" style="width: 100%">
+              <el-option v-for="item in roles" :key="roles.name" :label="roles.name" :value="roles.key"></el-option>
+          </el-select>
       </el-form-item>
       <el-form-item label="昵称" >
         <el-input v-model="form.nickname" autocomplete="off"></el-input>
@@ -157,6 +163,7 @@ export default {
             form:{},
             multipleSelection:[],
             dialogFormVisible:false,
+            roles:[]
         }
     },
     created() {//生命钩子里面发送请求
@@ -194,6 +201,10 @@ export default {
                console.log(res)
                this.tableData=res.data.records  //这里参数需要在浏览器的网络监视器里面去看
                this.total=res.data.total
+            })
+            
+            request.get("/role").then(res=>{
+                this.roles=res.data
             })
         },
     

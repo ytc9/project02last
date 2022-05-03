@@ -19,7 +19,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         //拦截所有请求，通过判断token是否合法来判断是否登录
     }
 
-    /*@Bean是一个方法级别上的注解，主要用在@Configuration注解的类里，
+    /*@Bean是一个方法级别上的注解，主要用在@Configuration注解的类里，主要是会让框架自动创建 类自己的对象类
     也可以用在@Component注解的类里。@Bean注解主要是把容器交给springboot里的spring容器来管理*/
     @Bean
     public JwtInterceptor jwtInterceptor(){

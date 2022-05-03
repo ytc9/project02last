@@ -29,5 +29,6 @@ public class User {
     @TableField(value = "avatar_url")
     private String avatar;
     private Date createTime;
+    private String role;
 }
 /*这有lombok可以不用写get和set 直接用@Data*/

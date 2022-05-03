@@ -19,7 +19,7 @@ import java.util.Date;
 /*Header（头部）：放有签名算法和令牌类型
   Payload（负载）：你在令牌上附带的信息：比如用户的姓名，这样以后验证了令牌之后就可以直接从这里获取信息而不用再查数据库了
   Signature（签名）：对前两部分的签名，防止数据篡改*/
-//@component把该类注解成容器里面的bean
+//@component把该类注解成容器里面的bean就是启动项目的时候会自动创建
 @Component
 //生成token类  主要防止不登录就直接通过网页进入后端
 public class TokenUtils {
