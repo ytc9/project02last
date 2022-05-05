@@ -67,6 +67,7 @@ public class FileController {
         String url;
         //文件存储到磁盘
         file.transferTo(uploadFile);
+
         md5= SecureUtil.md5(uploadFile);
         Files dbFiles=getFileByMd5(md5);
         if (dbFiles!=null){
@@ -89,7 +90,7 @@ public class FileController {
         return url;
     }
 
-    //下载接口
+    //下载接口(可复用)
     @GetMapping("/{fileUid}")
     public void download(@PathVariable String fileUid, HttpServletResponse response) throws IOException {
         //根据文件的唯一标识来获取文件

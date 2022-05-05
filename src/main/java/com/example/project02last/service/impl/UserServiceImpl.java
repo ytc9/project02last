@@ -5,13 +5,20 @@ import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.project02last.common.Constants;
 import com.example.project02last.controller.dto.UserDTO;
+import com.example.project02last.entity.Menu;
 import com.example.project02last.entity.User;
 import com.example.project02last.exception.ServiceException;
+import com.example.project02last.mapper.RoleMapper;
+import com.example.project02last.mapper.RoleMenuMapper;
 import com.example.project02last.mapper.UserMapper;
+import com.example.project02last.service.IMenuService;
 import com.example.project02last.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.project02last.utils.TokenUtils;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -23,7 +30,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     private static final Log log=Log.get();
+    @Resource
+    private RoleMapper roleMapper;
 
+    @Resource
+    private RoleMenuMapper roleMenuMapper;
+
+    @Resource
+    private IMenuService menuService;
     private  User getUserInfo(UserDTO userDTO){
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("username",userDTO.getUsername());
@@ -47,6 +61,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             //设置token通过User对象
             String token = TokenUtils.genToken(one.getId().toString(),one.getPassword());
             userDTO.setToken(token);
+            String role= one.getRole();
+            Integer roleId=roleMapper.selectByFlag(role);
+            List<Integer> menuIds=roleMenuMapper.selectByRoleId(roleId);
+            //查出系统所有的
+            List<Menu>  menus=menuService.findAll("");
             return userDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");

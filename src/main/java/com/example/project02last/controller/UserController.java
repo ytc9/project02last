@@ -79,7 +79,8 @@ public Result delete(@PathVariable Integer id) {
 
 //批量删除接口
 @PostMapping("/del/batch") //Delet接口没办法从前端传纯数组所以要用post接口
-public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
+public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]返回一个id的数组
+        System.out.println(ids);
         return Result.success(userService.removeByIds(ids));
         }
 

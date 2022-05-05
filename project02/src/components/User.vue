@@ -67,6 +67,8 @@
     </el-table-column>
     <el-table-column prop="username" label="用户名" width="140">
     </el-table-column>
+    <el-table-column prop="role" label="角色" width="140">
+    </el-table-column>
     <el-table-column prop="nickname" label="昵称" width="120">
     </el-table-column>
     <el-table-column prop="email" label="邮箱">
@@ -82,6 +84,7 @@
            scope.row就是获取的属性
         -->
         <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
+        
         <el-popconfirm
             style="margin-left: 5px"
             confirm-button-text='好的'
@@ -93,6 +96,7 @@
         >   <!--删除确认框 这里有确认框就不用@click用@confirm-->
           <el-button type="danger" slot="reference">删除<i class="el-icon-remove-outline"></i></el-button>
         </el-popconfirm>
+        
       </template>
     </el-table-column>
   </el-table>
@@ -120,8 +124,8 @@
           <el-input v-model="form.username" autocomplete="off"></el-input>
       </el-form-item>
       <el-form-item label="选择角色" >
-          <el-select clearable v-model="form.name" placeholder="请选择角色" style="width: 100%">
-              <el-option v-for="item in roles" :key="roles.name" :label="roles.name" :value="roles.key"></el-option>
+          <el-select clearable v-model="form.role" placeholder="请选择角色" style="width: 100%">
+              <el-option v-for="item in roles" :key="item.name" :label="item.name" :value="item.flag"></el-option>
           </el-select>
       </el-form-item>
       <el-form-item label="昵称" >
