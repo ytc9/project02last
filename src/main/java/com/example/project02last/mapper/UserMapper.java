@@ -7,7 +7,8 @@ import java.util.List;
 
 
 
-//@Mapper  和mybatis映射是一样的功能 这里我们用了mybatis-plus里面 @MapperScan
+// @Mapper 是通过xml文件里面namespace来找到dao层 类似于@Repository("User")
+// 和mybatis映射是一样的功能 这里我们用了mybatis-plus里面 @MapperScan
 //
 public interface UserMapper extends BaseMapper<User> {
   /*
