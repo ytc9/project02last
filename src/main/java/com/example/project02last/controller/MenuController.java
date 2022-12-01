@@ -54,9 +54,15 @@ public Result deleteBatch(@RequestBody List<Integer> ids){  //[1,2,3]
 //树级菜单返回接口
 @GetMapping
 public Result findAll(@RequestParam(defaultValue = "") String name) {
-         List<Menu> parentNodes=menuService.findAll(name);
+         List<Menu> parentNodes=menuService.findMenus(name);
          return Result.success(parentNodes);
         }
+@GetMapping("/ids")
+public Result findAllIds(){
+    //查出menu中所有的id
+    return Result.success(menuService.list().stream().map(Menu::getId));
+}
+
 
 @GetMapping("/{id}")
 public Result findOne(@PathVariable Integer id) {

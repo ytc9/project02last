@@ -9,9 +9,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.project02last.common.Result;
 import com.example.project02last.entity.Files;
-import com.example.project02last.entity.User;
 import com.example.project02last.mapper.FileMapper;
-import com.example.project02last.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +68,7 @@ public class FileController {
 
         md5= SecureUtil.md5(uploadFile);
         Files dbFiles=getFileByMd5(md5);
+
         if (dbFiles!=null){
             url=dbFiles.getUrl();
             uploadFile.delete();
@@ -101,7 +100,7 @@ public class FileController {
         response.setContentType("application/octet-stream");
         //读取文件的字节流
         os.write(FileUtil.readBytes(uploadFile));
-        os.flush();
+        os.flush();//将数据写出缓冲区
         os.close();
     }
 

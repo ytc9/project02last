@@ -14,6 +14,9 @@ import com.example.project02last.controller.dto.UserDTO;
 import com.example.project02last.entity.User;
 import com.example.project02last.service.IUserService;
 import com.example.project02last.utils.TokenUtils;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,6 +35,8 @@ import java.util.List;
  * @author 杨添辰
  * @since 2022-04-17
  */
+//RestController就是@responseBody和@controller的混合
+@Data
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -39,9 +44,11 @@ public class UserController {
 @Resource
 private IUserService userService;
 
+//接口规则 一般查询用get接口 其他用post或者delete接口
+
 //登录接口
 @PostMapping("/login")
-public Result Login(@RequestBody UserDTO userDTO) {
+public Result Login(@RequestBody UserDTO userDTO) { //@RequestBody只能用post接口
         String username=userDTO.getUsername();
         String password=userDTO.getPassword();
         //逻辑判断输入的账号和密码是否为空
@@ -131,7 +138,6 @@ public Result findPage(@RequestParam Integer pageNum,
         queryWrapper.orderByDesc("id");
         //Jwt Token
         User currentUser = TokenUtils.getCurrentUser();
-        //System.out.println("获取当前用户信息================================="+currentUser.getNickname());
         return Result.success(userService.page(page,queryWrapper));
         }
 

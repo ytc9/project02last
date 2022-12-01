@@ -15,5 +15,5 @@ import java.util.List;
  */
 public interface IMenuService extends IService<Menu> {
 
-    List<Menu> findAll(String name);
+    List<Menu> findMenus(String name);
 }

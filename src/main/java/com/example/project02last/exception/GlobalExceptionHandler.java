@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     //必须要@ExceptionHandler(自定义异常类)去抛出异常
     @ExceptionHandler(ServiceException.class)
-
     @ResponseBody
     public Result handle(ServiceException se){
         return  Result.error(se.getCode(),se.getMessage());

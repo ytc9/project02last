@@ -52,7 +52,6 @@ public Result findAll() {
 public Result findOne(@PathVariable Integer id) {
         return Result.success(roleService.getById(id)) ;
         }
-
 @GetMapping("/page")
 public Result findPage(@RequestParam String name,
                        @RequestParam Integer pageNum,

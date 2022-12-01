@@ -1,7 +1,7 @@
 <template>
     <el-container style="min-height: 100vh;"><!--高度都设置好就能贴边-->
         <el-aside :width="sideWidth+'px'"  style="background-color: rgb(238, 241, 246); " >
-          <Aside :isCollapse="isCollapse" :logoShow="logoShow"></Aside>
+          <Aside :isCollapse="isCollapse" :logoShow="logoShow" :menu="user.menus"></Aside>
         </el-aside>
 
         <el-container>

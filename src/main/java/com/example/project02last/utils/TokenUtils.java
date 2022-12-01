@@ -6,7 +6,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.project02last.entity.User;
 import com.example.project02last.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -35,9 +34,12 @@ public class TokenUtils {
     }
 
 
+
+
+
     public static String genToken(String userId,String sign){
         return JWT.create().withAudience(userId) //将user id作为token里面的负载
-                .withExpiresAt(DateUtil.offsetHour(new Date(),2))//2小时后过期
+                .withExpiresAt(DateUtil.offsetHour(new Date(),24))//2小时后过期
                 .sign(Algorithm.HMAC256(sign));
         //头部放userId
     }
@@ -49,6 +51,7 @@ public class TokenUtils {
         HttpServletRequest request=((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String token=request.getHeader("token");
         if (StrUtil.isBlank(token)){
+            //JWT.decode 对token解码获取到Audience包装的username
             String userId=JWT.decode(token).getAudience().get(0);
             //Integer.valueOf将userId从int类包装成Integer类
             staticUserService.getById(Integer.valueOf(userId));

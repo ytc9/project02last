@@ -22,16 +22,16 @@ import java.util.stream.Collectors;
 public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
 
     @Override
-    public List<Menu> findAll(String name) {
+    public List<Menu> findMenus(String name) {
         QueryWrapper<Menu> queryWrapper=new QueryWrapper<>();
         if (StrUtil.isNotBlank(name)){
             queryWrapper.like("name",name);//传来的name如果是空就全查
         }
         List<Menu> list=list(queryWrapper);
-        //pid为null的1级菜单
+        //pid为null的1级菜单 这里的过滤器比较重要
         List<Menu> parentNodes=list.stream().filter(menu -> menu.getPid()==null).collect(Collectors.toList());
         for(Menu menu:parentNodes){
-            //通过pid和id的对应值找出1级菜单的子菜单
+            //通过pid和id的对应值找出1级菜单或多级菜单的子菜单(就是把menu中系统管理的id和pid对应下面的菜单)
             menu.setChildren(list.stream().filter(m -> menu.getId().equals(m.getPid()) ).collect(Collectors.toList()));
         }
         return parentNodes;

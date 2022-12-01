@@ -18,6 +18,7 @@ import com.example.project02last.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -61,11 +62,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             //设置token通过User对象
             String token = TokenUtils.genToken(one.getId().toString(),one.getPassword());
             userDTO.setToken(token);
+
+
             String role= one.getRole();
+            //找到登录角色的 角色id
             Integer roleId=roleMapper.selectByFlag(role);
+            //根据roleId查出 role_menu中 该角色对应所有的菜单id集合
             List<Integer> menuIds=roleMenuMapper.selectByRoleId(roleId);
-            //查出系统所有的
-            List<Menu>  menus=menuService.findAll("");
+            //查出系统所有的菜单
+            List<Menu>  menus=menuService.findMenus("");
+            List<Menu>  roleMenus=new ArrayList<>();
+            //筛选当前角色的菜单
+            for (Menu menu : menus) {
+                if (menuIds.contains(menu.getId())){
+                    roleMenus.add(menu);
+                }
+                List<Menu> children =menu.getChildren();
+                //移除children里面不在menuIds集合中的元素
+                children.removeIf(child->!menuIds.contains(child.getId()));
+            }
+
+            userDTO.setMenus(roleMenus);
             return userDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");

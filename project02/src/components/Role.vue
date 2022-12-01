@@ -69,7 +69,7 @@
         <!--这里必须要绑定slot scope不然没法获取编辑数据
            scope.row就是获取的属性
         -->
-         <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单<i class="el-icon-menu"></i></el-button>
+         <el-button type="info" @click="selectMenu(scope.row)">分配菜单<i class="el-icon-menu"></i></el-button>
         <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
         <el-popconfirm
             style="margin-left: 5px"
@@ -129,8 +129,8 @@
           :data="menuData"
           show-checkbox
           node-key="id"
-          :default-expanded-keys="[expands]"
-          :default-checked-keys="[checks]"
+          :default-expanded-keys="expands"
+          :default-checked-keys="checks"
           ref="tree"
       >
         <span class="custom-tree-node" slot-scope="{node,data}">
@@ -169,7 +169,8 @@ export default {
             },
             expands:[],
             checks:[],
-            roleId:0
+            roleId:0,
+            roleFlag:""
         }
     },
     created() {//生命钩子里面发送请求
@@ -219,6 +220,11 @@ export default {
             if (res.code==="200"){
                 this.$message.success("绑定成功")
                 this.menuDialogVisible=false
+                
+                //操作管理员的时候需要重新登录
+                if (this.roleFlag==="ROLE_ADMIN"){
+                    this.$store.commit("logout")
+                }
             }else {
                 this.$message.error(res.msg)
             }
@@ -226,23 +232,39 @@ export default {
         )
         },
     
-    
-        selectMenu(roleId){
-            this.menuDialogVisible=true
-            this.roleId=roleId
-            request.get("/menu",{
-                params:{
-                    name:""
-                }
-            }).then(res=>{
+        //关键这里的数据的同步很关键
+        selectMenu(role){
+            this.roleId=role.id
+            this.roleFlag=role.flag
+            //请求菜单数据
+            request.get("/menu").then(res=>{
+                console.log(res)
                 this.menuData=res.data
-                //把返回的菜单数据处理成id数据
+                // 把后台返回的菜单数据处理成 id数组
                 this.expands=this.menuData.map(v=>v.id)
             })
-            request.get("/role/roleMenu/"+roleId,{
+          
+            //请求后台的菜单内容数据
+            request.get("/role/roleMenu/"+this.roleId,{
             }).then(res=>{
+                
                 this.checks=res.data
+                //因为之前更改了那个父级节点的添加所以后面调用的时候会把父级id传给前端
+                //请求后台的参数所有的menu的id 因为一旦父级id被绑定上之后传到前端就会直接展开所有子级
+                request.get("/menu/ids").then(r=>{
+                    const ids=r.data
+                    ids.forEach(id=>{
+                        if (!this.checks.includes(id)){
+                            this.$nextTick(()=>{
+                                this.$refs.tree.setChecked(id,false)
+                            })
+                        }
+                    })
+                })
+                this.menuDialogVisible=true
             })
+            
+            
         },
         
         handleDelete(id){

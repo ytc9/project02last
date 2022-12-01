@@ -207,6 +207,7 @@ export default {
                this.total=res.data.total
             })
             
+            //从后台把后台人员的身份信息传给前端做权限管理
             request.get("/role").then(res=>{
                 this.roles=res.data
             })

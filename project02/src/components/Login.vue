@@ -23,6 +23,7 @@
 
 <script>
 import request from "@/utils/request";
+import {setRoutes} from "@/router";
 
 export default {
    name: "Login",
@@ -48,7 +49,11 @@ export default {
             if (valid){
                request.post("/user/login",this.user).then(res=>{
                   if (res.code==='200') {//根据后端给的code来判断是否Login res里的都是后端传来的数据
-                     localStorage.setItem("user",JSON.stringify(res.data)) //用户信息存入浏览器
+                     localStorage.setItem("user",JSON.stringify(res.data)) //用户信息存入浏览器(包括菜单)
+                     localStorage.setItem("menus",JSON.stringify(res.data.menus))
+                     
+                    //登录时调用动态路由方法
+                     setRoutes()
                      this.$message.success("登录成功")
                      this.$router.push("/")//成功就跳转到/页面
                   }else {

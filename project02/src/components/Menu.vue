@@ -50,6 +50,8 @@
     </el-table-column>
      <el-table-column prop="path" label="路径" >
      </el-table-column>
+    <el-table-column prop="pagePath" label="页面路径" >
+    </el-table-column>
      <!-- class-name="fontSize18" 图标样式
           align="center"
           label-class-name="fontSize12"  头部字体  -->
@@ -109,6 +111,9 @@
        <el-form-item label="路径" >
           <el-input v-model="form.path" autocomplete="off"></el-input>
        </el-form-item>
+      <el-form-item label="页面路径" >
+        <el-input v-model="form.pagePath" autocomplete="off"></el-input>
+      </el-form-item>
        <el-form-item label="图标" >
          <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
              <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">

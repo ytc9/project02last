@@ -11,7 +11,7 @@ import java.util.List;
 // 和mybatis映射是一样的功能 这里我们用了mybatis-plus里面 @MapperScan
 //
 public interface UserMapper extends BaseMapper<User> {
-  /*
+    /*
     @Select("select * from user")
     List<User> findAll();
 
@@ -27,7 +27,7 @@ public interface UserMapper extends BaseMapper<User> {
     Integer deleteId(@Param("id") Integer id);
 
 
-    //concat拼接函数实际为like %#{username}%用于分页模糊查询
+    //concat拼接函数实际为like % #{username} %用于分页模糊查询
 
     @Select("select * from user where username like concat('%',#{username},'%') limit #{pageNum},#{pageSize}")
     List<User> selectPage(Integer pageNum, Integer pageSize, String username);
